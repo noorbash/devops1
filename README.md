@@ -152,3 +152,5 @@ kubectl logs -f deployment/image-api -n image-api-ns
 ![image](https://github.com/user-attachments/assets/9f97bf5d-8392-426e-8934-12d32ea4de86)
 
 
+note: if you want sclae the application, then define nodegroup with scaling and write hpa file
+
