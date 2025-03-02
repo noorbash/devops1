@@ -1,0 +1,24 @@
+image:
+  repository: 001041424912.dkr.ecr.us-east-1.amazonaws.com/playground/ailab
+  tag: latest
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 3000
+ess:
+  enabled: false  # Change to true if using ingress
+serviceAccount:
+  create: true
+  name: "image-api-sa" 
+autoscaling:
+  enabled: false
+readinessProbe:
+  enabled: false
+
+livenessProbe:
+  enabled: false
+
+nodeSelector:
+  app: signoz

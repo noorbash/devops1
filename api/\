@@ -1,0 +1,12 @@
+image:
+  repository: 001041424912.dkr.ecr.us-east-1.amazonaws.com/playground/ailab
+  tag: latest
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+ess:
+  enabled: false  # Change to true if using ingress
+
