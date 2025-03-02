@@ -145,7 +145,10 @@ kubectl logs -f deployment/image-api -n image-api-ns
 
 ---
 
-## **License**
+![image](https://github.com/user-attachments/assets/cfe7255c-84ad-4031-979b-e6ed76556863)
 
-This project is licensed under the MIT License.
+![image](https://github.com/user-attachments/assets/6e136ade-070a-4ebd-97c0-04f3d46c7ce7)
+
+![image](https://github.com/user-attachments/assets/9f97bf5d-8392-426e-8934-12d32ea4de86)
+
 
