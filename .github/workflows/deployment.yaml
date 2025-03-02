@@ -1,9 +1,10 @@
-name: Deploy to EKS
+name: API  Deploy to EKS
 
 on:
   push:
     branches:
-      - main  # Change this if your default branch is different
+      - main
+      - devops # Change this if your default branch is different
   workflow_dispatch:  # Allow manual triggers
 
 env:
