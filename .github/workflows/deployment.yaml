@@ -1,40 +1,45 @@
-name: API  Deploy to EKS
+name: API Deploy to EKS
 
 on:
   push:
     branches:
       - main
-      - devops # Change this if your default branch is different
+      - devops  # Change if your default branch is different
   workflow_dispatch:  # Allow manual triggers
 
 env:
   AWS_REGION: us-east-1   # Change to your EKS region
   EKS_CLUSTER_NAME: my-eks-cluster  # Change to your EKS cluster name
+  ECR_REGISTRY: 001041424912.dkr.ecr.us-east-1.amazonaws.com  # Change to your AWS ECR Registry
   IMAGE_NAME: my-image-api
   IMAGE_TAG: latest
-  DOCKER_REGISTRY: my-dockerhub-username  # Change to your Docker registry username
   HELM_RELEASE_NAME: image-api
   HELM_NAMESPACE: image-api-ns  # Change to your desired namespace
 
 jobs:
   build-and-push:
-    name: Build and Push Docker Image
+    name: Build and Push Docker Image to ECR
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Build and Tag Docker Image
+      - name: Log in to Amazon ECR
         run: |
-          docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
-          docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
   deploy-to-eks:
     name: Deploy to EKS
@@ -64,6 +69,5 @@ jobs:
           helm upgrade --install $HELM_RELEASE_NAME ./helm-chart \
             --namespace $HELM_NAMESPACE \
             --create-namespace \
-            --set image.repository=$DOCKER_REGISTRY/$IMAGE_NAME \
+            --set image.repository=$ECR_REGISTRY/$IMAGE_NAME \
             --set image.tag=$IMAGE_TAG
-
